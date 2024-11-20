@@ -19,7 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${splineSans.className} antialiased`}>{children} </body>
+      <body
+        className={`bg-slate-100 text-slate-500 min-h-screen ${splineSans.className} antialiased`}
+      >
+        {children}{' '}
+      </body>
     </html>
   )
 }
