@@ -12,27 +12,44 @@ import {
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
-type UfChartProps = {
+type PartyChartProps = {
   year: number
-  data: { year: string; data: { uf: string; total_expenses: number }[] }[]
+  data: {
+    year: string
+    data: {
+      party: string
+      senator_ids: string[]
+      total_expenses: number
+      total_per_senator: number
+    }[]
+  }[]
 }
 
-export default function UfChart({ data, year = 2024 }: UfChartProps) {
-  let chartData = data.find(item => Number(item.year) === year)?.data
+export default function PartyChart({ data, year = 2024 }: PartyChartProps) {
+  const chartData = data.find(item => Number(item.year) === year)?.data
   if (!chartData) return null
-
-  // Adiciona Média
-  if (!chartData.some(item => item.uf === 'Brasil')) {
-    const average = {
-      uf: 'Brasil',
-      total_expenses:
-        chartData.reduce((acc, item) => acc + item.total_expenses, 0) /
-        chartData.length,
+  let partyChartData = chartData.map(item => {
+    return {
+      party: item.party,
+      total_per_senator: item.total_per_senator,
     }
-    chartData.push(average)
+  })
+
+  // Adicionando a média
+  if (!partyChartData.some(item => item.party === 'Brasil')) {
+    const average = {
+      party: 'Brasil',
+      total_per_senator:
+        partyChartData.reduce((acc, item) => acc + item.total_per_senator, 0) /
+        partyChartData.length,
+    }
+    partyChartData.push(average)
   }
 
-  chartData = chartData?.sort((a, b) => b.total_expenses - a.total_expenses)
+  // Ordenação por Gastos
+  partyChartData = partyChartData.sort(
+    (a, b) => b.total_per_senator - a.total_per_senator
+  )
 
   const CustomTooltip = ({
     active,
@@ -45,7 +62,7 @@ export default function UfChart({ data, year = 2024 }: UfChartProps) {
       return (
         <div className="bg-white rounded p-2">
           <p className="label">
-            <span className="text-violet-500 font-bold">{label}: </span>
+            <span className="text-orange-500 font-bold">{label}: </span>
             <span>{new Intl.NumberFormat('pt-BR').format(value)}</span>
           </p>
         </div>
@@ -57,41 +74,41 @@ export default function UfChart({ data, year = 2024 }: UfChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl">Gastos por UF</CardTitle>
+        <CardTitle className="text-2xl">Gastos por Partido</CardTitle>
         <CardDescription>Dados de 2024</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={{}} className="min-h-[600px] w-full">
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={partyChartData}
             layout="vertical"
             margin={{
-              right: 70,
+              right: 60,
             }}
           >
             <YAxis
-              dataKey="uf"
+              dataKey="party"
               type="category"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
               hide
             />
-            <XAxis type="number" dataKey="total_expenses" hide />
+            <XAxis type="number" dataKey="total_per_senator" hide />
             <ChartTooltip content={CustomTooltip} />
             <Bar
-              dataKey="total_expenses"
+              dataKey="total_per_senator"
               layout="vertical"
               radius={[7, 7, 7, 7]}
             >
               <LabelList
-                dataKey="uf"
+                dataKey="party"
                 position="insideLeft"
                 className="fill-white font-bold"
               />
               <LabelList
-                dataKey="total_expenses"
+                dataKey="total_per_senator"
                 position="right"
                 fontSize={10}
                 className="fill-slate-600"
@@ -102,14 +119,14 @@ export default function UfChart({ data, year = 2024 }: UfChartProps) {
                   }).format(value)
                 }
               />
-              {chartData.map(entry => (
+              {partyChartData.map(entry => (
                 <Cell
-                  key={entry.uf}
+                  key={entry.party}
                   className={cn(
                     'fill-current',
-                    entry.uf === 'Brasil'
-                      ? 'fill-violet-400'
-                      : 'fill-violet-500'
+                    entry.party === 'Brasil'
+                      ? 'fill-orange-400'
+                      : 'fill-orange-500'
                   )}
                 />
               ))}
