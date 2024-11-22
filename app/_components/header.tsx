@@ -6,7 +6,7 @@ import MapIcon from './icons/map-icon'
 
 export default function Header() {
   return (
-    <header className="mb-12 flex flex-col gap-10 lg:flex-row justify-center items-center">
+    <header className="mb-12 flex flex-col gap-10 lg:flex-row lg:justify-between justify-center items-center">
       <div className="flex items-center gap-4">
         <Image src={logo} alt="Logo do projeto" width={70} height={70} />
         <div className="flex flex-col">
