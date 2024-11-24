@@ -1,5 +1,14 @@
 'use client'
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -9,7 +18,10 @@ import CalendarIcon from './icons/calendar-icon'
 import FlagIcon from './icons/flag-icon'
 import MapIcon from './icons/map-icon'
 
-export default function Header() {
+export default function Header({
+  year,
+  expensesType,
+}: { year: number; expensesType: 'uf' | 'party' }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -29,21 +41,57 @@ export default function Header() {
       <div className="flex items-center gap-4">
         <Image src={logo} alt="Logo do projeto" width={70} height={70} />
         <div className="flex flex-col">
-          <h1 className="text-3xl font-bold mb-1">
+          <h1 className="text-3xl font-bold mb-1 text-zinc-950">
             Gastos dos Senadores Brasileiros
           </h1>
-          <p>Gastos dos senadores brasileiros total por estado (UF) - CEAPS</p>
+          <p>
+            Gastos dos senadores brasileiros total por{' '}
+            <strong>{expensesType === 'uf' ? 'estado' : 'partido'}</strong> -
+            CEAPS
+          </p>
         </div>
       </div>
       <nav className="flex gap-6">
         <div className="border-r-2 pr-6 border-black/10">
-          <button
-            type="button"
-            className="flex flex-col items-center justify-center text-xs gap-2 border-black/10 border-2 px-4 py-3 rounded-lg fill-slate-500"
-          >
-            <CalendarIcon />
-            Calendário
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <button
+                type="button"
+                className="flex flex-col items-center justify-center text-xs gap-2 border-black/10 border-2 px-4 py-3 rounded-lg hover:border-violet-500 transition-colors hover:fill-violet-500 fill-slate-500"
+              >
+                <CalendarIcon />
+                Calendário
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Escolha o ano</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={year.toString()}
+                onValueChange={year =>
+                  router.push(
+                    `${pathname}?${createQueryString('year', year.toString())}`
+                  )
+                }
+              >
+                <DropdownMenuRadioItem className="cursor-pointer" value="2024">
+                  2024
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem className="cursor-pointer" value="2023">
+                  2023
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem className="cursor-pointer" value="2022">
+                  2022
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem className="cursor-pointer" value="2021">
+                  2021
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem className="cursor-pointer" value="2020">
+                  2020
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="flex gap-4">
           <NavButton

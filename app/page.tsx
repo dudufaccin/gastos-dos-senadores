@@ -11,6 +11,10 @@ export default async function Home({ searchParams }: HomeProps) {
   const expensesType = searchParams.type || 'uf'
   const year = Number(searchParams.year) || 2024
 
+  if (expensesType !== 'uf' && expensesType !== 'party') {
+    return null
+  }
+
   const ufRes = await fetch(
     'https://apis.codante.io/senator-expenses/summary/by-uf'
   )
@@ -23,7 +27,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className="container mx-auto py-16">
-      <Header />
+      <Header expensesType={expensesType} year={year} />
       {expensesType === 'uf' && <UfChart year={year} data={ufData} />}
       {expensesType === 'party' && <PartyChart year={year} data={partyData} />}
     </main>
