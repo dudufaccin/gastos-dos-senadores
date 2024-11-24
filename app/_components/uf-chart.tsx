@@ -58,7 +58,7 @@ export default function UfChart({ data, year = 2024 }: UfChartProps) {
     <Card>
       <CardHeader>
         <CardTitle className="text-2xl">Gastos por UF</CardTitle>
-        <CardDescription>Dados de 2024</CardDescription>
+        <CardDescription>Dados de {year}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={{}} className="min-h-[600px] w-full">

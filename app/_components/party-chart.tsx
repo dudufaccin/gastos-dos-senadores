@@ -75,7 +75,7 @@ export default function PartyChart({ data, year = 2024 }: PartyChartProps) {
     <Card>
       <CardHeader>
         <CardTitle className="text-2xl">Gastos por Partido</CardTitle>
-        <CardDescription>Dados de 2024</CardDescription>
+        <CardDescription>Dados de {year}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={{}} className="min-h-[600px] w-full">
@@ -125,7 +125,7 @@ export default function PartyChart({ data, year = 2024 }: PartyChartProps) {
                   className={cn(
                     'fill-current',
                     entry.party === 'Brasil'
-                      ? 'fill-orange-400'
+                      ? 'fill-orange-300'
                       : 'fill-orange-500'
                   )}
                 />

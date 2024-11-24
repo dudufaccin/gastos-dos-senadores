@@ -3,7 +3,14 @@ import Header from './_components/header'
 import PartyChart from './_components/party-chart'
 import UfChart from './_components/uf-chart'
 
-export default async function Home() {
+type HomeProps = {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const expensesType = searchParams.type || 'uf'
+  const year = Number(searchParams.year) || 2024
+
   const ufRes = await fetch(
     'https://apis.codante.io/senator-expenses/summary/by-uf'
   )
@@ -17,9 +24,8 @@ export default async function Home() {
   return (
     <main className="container mx-auto py-16">
       <Header />
-      <UfChart year={2024} data={ufData} />
-      <Separator className="py-3" />
-      <PartyChart year={2024} data={partyData} />
+      {expensesType === 'uf' && <UfChart year={year} data={ufData} />}
+      {expensesType === 'party' && <PartyChart year={year} data={partyData} />}
     </main>
   )
 }
